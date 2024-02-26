@@ -23,9 +23,7 @@ fn main() {
 }
 
 fn handle_client(mut stream: TcpStream) {
-    loop {
-        stream
-            .write_all(b"+PONG\r\n")
-            .expect("Failed to write to client");
-    }
+    stream
+        .write_all(b"+PONG\r\n")
+        .expect("Failed to write to client");
 }
