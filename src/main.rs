@@ -1,5 +1,5 @@
 // Uncomment this block to pass the first stage
-use std::io::Write;
+use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
 
 fn main() {
@@ -23,9 +23,21 @@ fn main() {
 }
 
 fn handle_client(mut stream: TcpStream) {
+    let mut buffer = String::with_capacity(512);
+
     loop {
-        stream
-            .write_all(b"+PONG\r\n")
-            .expect("Failed to write to client");
+        let mut reader = BufReader::new(&stream);
+
+        match reader.read_line(&mut buffer) {
+            Ok(0) => break,
+            Ok(_bytes) => {
+                stream
+                    .write_all(b"+PONG\r\n")
+                    .expect("Failed to write to client");
+            }
+            Err(e) => {
+                println!("error: {}", e);
+            }
+        }
     }
 }
