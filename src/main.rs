@@ -1,6 +1,7 @@
 // Uncomment this block to pass the first stage
 use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
+use std::thread;
 
 fn main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -10,7 +11,7 @@ fn main() {
 
     let listener = TcpListener::bind("127.0.0.1:6379").unwrap();
     for stream in listener.incoming() {
-        match stream {
+        thread::spawn(|| match stream {
             Ok(stream) => {
                 println!("accepted new connection");
                 handle_client(stream);
@@ -18,7 +19,7 @@ fn main() {
             Err(e) => {
                 println!("error: {}", e);
             }
-        }
+        });
     }
 }
 
