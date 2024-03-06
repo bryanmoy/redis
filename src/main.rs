@@ -24,7 +24,12 @@ async fn process_socket(mut stream: TcpStream) {
         match stream.read(&mut buffer).await {
             Ok(0) => break,
             Ok(bytes) => {
-                let data = format!("\r\n{:?}\r\n", &buffer[..bytes]).into_bytes();
+                let data = format!(
+                    "${:?}\r\n{:?}\r\n",
+                    &buffer[..bytes].len(),
+                    &buffer[..bytes]
+                )
+                .into_bytes();
                 stream
                     .write_all(&data)
                     .await
